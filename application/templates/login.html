@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}
+    Авторизация
+{% end %}
+{% block style %}
+<link href="/static/css/signin.css" rel="stylesheet">
+{% end %}
+{% block body %}
+<div class="container">
+    <form class="form-signin" method="post" data-toggle="validator" role="form" action="/login/">
+        <div id="login-csrf">{% module xsrf_form_html() %}</div>
+        <h2 class="form-signin-heading text-center text-primary">Авторизация</h2>
+        <label for="inputLogin" class="sr-only">Логин</label>
+        <input name="login" type="text" id="inputLogin" class="form-control" placeholder="логин" {% if login %}value="{{ login }}"{% end %} required autofocus>
+        <label for="inputPassword" class="sr-only">Пароль</label>
+        <input name="password" type="password" id="inputPassword" class="form-control" placeholder="пароль" {% if password %}value="{{ password }}"{% end %} required>
+        <input name="next" type="text" hidden="hidden" id="next" value="{{ next }}">
+        <div class="help-block with-errors">{% if error %}{{ error }}{% end %}</div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Войти</button>
+    </form>
+</div>
+{% end %}
+{% block script %}
+{% end %}
