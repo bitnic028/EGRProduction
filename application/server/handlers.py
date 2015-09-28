@@ -129,3 +129,36 @@ class IndexHandler(BaseHandler):
             self.redirect("/login/?next=/")
         else:
             self.render("index.html")
+
+
+class GetObjectHandler(BaseHandler):
+
+    def data_received(self, chunk):
+        pass
+
+    def post(self, *args, **kwargs):
+        if not self.user_is_admin():
+            raise HTTPError(405)
+        else:
+            object_type = self.get_body_argument("object_type", default=u"")
+            object_id = self.get_body_argument("object_id", default=0)
+            if object_type == "":
+                self.write({"result": False, "reason": u"Не указан тип объекта"})
+            elif object_id == "" or int(object_id) == 0:
+                self.write({"result": False, "reason": u"Не указан id объекта"})
+            else:
+                if object_type not in models.OBJECTS_TYPES.keys():
+                    self.write({"result": False, "reason": u"Не найден тип объекта: {}".format(object_type)})
+                else:
+                    try:
+                        obj = models.OBJECTS_TYPES[object_type].get(
+                            models.OBJECTS_TYPES[object_type].id == int(object_id)
+                        )
+                        self.write({"result": True, "data": obj.get_dict()})
+                    except models.OBJECTS_TYPES[object_type].DoesNotExist:
+                        self.write(
+                            {
+                                "result": False,
+                                "reason": u"Объект типа: '{0}' с id={1} в БД не найден".format(object_type, object_id)
+                            }
+                        )

@@ -216,6 +216,7 @@ class Artwork(RootObject):
     image = CharField(null=True)
     start = DateField(null=True)
     finish = DateField(null=True)
+    action_date = DateField(null=True)
 
     def get_dict(self):
         return {
@@ -225,7 +226,8 @@ class Artwork(RootObject):
             "client": self.client.get_dict() if self.client else False,
             "image": self.image if self.image else u"",
             "start": helpers.string_from_date(self.start, u"short2") if self.start else False,
-            "finish": helpers.string_from_date(self.finish, u"short2") if self.finish else False
+            "finish": helpers.string_from_date(self.finish, u"short2") if self.finish else False,
+            "action_date": helpers.string_from_date(self.action_date, u"short2") if self.action_date else False
         }
 
 
@@ -253,6 +255,9 @@ class Construction(RootObject):
     price_type = ForeignKeyField(PriceType, related_name=u"price_type_constructions", null=True)
     installer = ForeignKeyField(Installer, related_name=u"installer_constructions", null=True)
     size = ForeignKeyField(Size, related_name=u"size_constructions", null=True)
+    number = TextField(null=True)
+    color = TextField(null=True)
+    address = TextField()
 
     def get_dict(self):
         return {
@@ -261,7 +266,10 @@ class Construction(RootObject):
             "district": self.district.get_dict() if self.district else False,
             "price_type": self.price_type.get_dict() if self.price_type else False,
             "installer": self.installer.get_dict() if self.installer else False,
-            "size": self.size.get_dict() if self.size else False
+            "size": self.size.get_dict() if self.size else False,
+            "number": self.number if self.number else "",
+            "color": self.color if self.color else "",
+            "address": self.address if self.address else "",
         }
 
 
@@ -317,6 +325,7 @@ class InstallationOrderRow(BaseModel):
     construction = ForeignKeyField(Construction, u"construction_installations", null=True)
     installation_type = ForeignKeyField(InstallationType, u"installation_type_installations", null=True)
     installer = ForeignKeyField(Installer, u"installer_installations", null=True)
+    photo_report = TextField(null=True)
 
     def get_dict(self):
         return {
@@ -326,7 +335,8 @@ class InstallationOrderRow(BaseModel):
             "artwork_in": self.artwork_in.get_dict() if self.artwork_in else False,
             "construction": self.construction.get_dict() if self.construction else False,
             "installation_type": self.installation_type.get_dict() if self.installation_type else False,
-            "installer": self.installer.get_dict() if self.installer else False
+            "installer": self.installer.get_dict() if self.installer else False,
+            "photo_report": self.photo_report if self.photo_report else ""
         }
 
 
@@ -339,6 +349,7 @@ class PrintOrder(BaseModel):
     price_type = ForeignKeyField(PriceType, related_name=u"price_type_print_orders", null=True)
     print_type = ForeignKeyField(InstallationType, related_name=u"print_type_print_orders")
     material = ForeignKeyField(Material, related_name=u"material_print_orders")
+    amount = IntegerField(default=0)
 
     def get_dict(self):
         return {
@@ -349,7 +360,8 @@ class PrintOrder(BaseModel):
             "size": self.size.get_dict() if self.size else False,
             "price_type": self.price_type.get_dict() if self.price_type else False,
             "print_type": self.print_type.get_dict() if self.print_type else False,
-            "material": self.material.get_dict() if self.material else False
+            "material": self.material.get_dict() if self.material else False,
+            "amount": self.amount.get_dict() if self.amount else False
         }
 
 
@@ -467,6 +479,30 @@ def create_tables():
         safe=True
     )
 
+OBJECTS_TYPES = {
+    "User": User,
+    "Client": Client,
+    "District": District,
+    "Material": Material,
+    "Installer": Installer,
+    "Size": Size,
+    "InstallationType": InstallationType,
+    "ConstructionType": ConstructionType,
+    "PriceType": PriceType,
+    "ConstructionStatus": ConstructionStatus,
+    "PartnerOrganization": PartnerOrganization,
+    "ContactPerson": ContactPerson,
+    "Artwork": Artwork,
+    "PriceHistory": PriceHistory,
+    "Construction": Construction,
+    "Period": Period,
+    "InstallationOrder": InstallationOrder,
+    "InstallationOrderRow": InstallationOrderRow,
+    "PrintOrder": PrintOrder,
+    "Organization": Organization,
+    "Invoice": Invoice,
+    "InvoiceRow": InvoiceRow,
+}
 
 if __name__ == "__main__":
     create_tables()

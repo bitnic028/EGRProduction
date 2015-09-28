@@ -7,4 +7,5 @@ urls = (
     (r"/", handlers.IndexHandler),
     (r"/login/", handlers.LoginHandler),
     (r"/logout/", handlers.LogoutHandler),
+    (r"/get_object/", handlers.GetObjectHandler),
 )
